@@ -105,7 +105,7 @@ public class OAuth2ServiceConfigurationBuilder {
 	 */
 	public OAuth2ServiceConfigurationBuilder withClientIdentity(ClientIdentity clientIdentity) {
 		properties.put(CLIENT_ID, clientIdentity.getId());
-		if (clientIdentity.isCertificateBased()) {
+		if (clientIdentity.isCertificateBased() && !(clientIdentity instanceof ClientCertificateKeyStore) ) {
 			properties.put(CERTIFICATE, clientIdentity.getCertificate());
 			properties.put(KEY, clientIdentity.getKey());
 		} else {

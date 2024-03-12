@@ -6,6 +6,7 @@
 package com.sap.cloud.security.mtls;
 
 import com.sap.cloud.security.config.ClientCertificate;
+import com.sap.cloud.security.config.ClientCertificateKeyStore;
 import com.sap.cloud.security.config.ClientIdentity;
 import com.sap.cloud.security.config.OAuth2ServiceConfiguration;
 import org.slf4j.Logger;
@@ -78,9 +79,7 @@ public class SSLContextFactory {
 	 */
 	public SSLContext create(ClientIdentity clientIdentity) throws GeneralSecurityException, IOException {
 		assertNotNull(clientIdentity, "clientIdentity must not be null");
-		assertHasText(clientIdentity.getCertificate(), "clientIdentity.getCertificate() must not return null");
-		assertHasText(clientIdentity.getKey(), "clientIdentity.getKey() must not return null");
-
+		
 		KeyStore keystore = createKeyStore(clientIdentity);
 		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
 		keyManagerFactory.init(keystore, noPassword);
@@ -102,6 +101,9 @@ public class SSLContextFactory {
 	 */
 	public KeyStore createKeyStore(ClientIdentity clientIdentity) throws GeneralSecurityException, IOException {
 		assertNotNull(clientIdentity, "clientIdentity must not be null");
+		if ( clientIdentity instanceof ClientCertificateKeyStore) {
+			return ((ClientCertificateKeyStore) clientIdentity).getKeyStore();
+		}
 		assertHasText(clientIdentity.getCertificate(), "clientIdentity.getCertificate() must not return null");
 		assertHasText(clientIdentity.getKey(), "clientIdentity.getKey() must not return null");
 
